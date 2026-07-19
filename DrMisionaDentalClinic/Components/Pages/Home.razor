@@ -1,0 +1,705 @@
+@page "/"
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<PageTitle>Dr. Misiona Dental Clinic - San Jose Del Monte | Your Smile, Our Mission</PageTitle>
+<HeadContent>
+    <meta name="description" content="Dr. Misiona Dental Clinic - San Jose Del Monte provides patient-focused dental care in Muzon, San Jose del Monte, Bulacan. Request an appointment for root canal therapy, clear aligners, braces, wisdom tooth removal, dental implants, veneers, whitening, and dentures." />
+    <meta name="theme-color" content="#5AA552" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_PH" />
+    <meta property="og:site_name" content="Dr. Misiona Dental Clinic - San Jose Del Monte" />
+    <meta property="og:title" content="Dr. Misiona Dental Clinic - San Jose Del Monte | Your Smile, Our Mission" />
+    <meta property="og:description" content="Professional and patient-focused dental care for individuals and families in Muzon, San Jose del Monte." />
+    <meta property="og:image" content="images/clinic-reception-wide.png" />
+    <meta property="og:image:alt" content="Dr. Misiona Dental Clinic reception area" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dr. Misiona Dental Clinic - San Jose Del Monte" />
+    <meta name="twitter:description" content="Your Smile, Our Mission." />
+    <meta name="twitter:image" content="images/clinic-reception-wide.png" />
+    <script type="application/ld+json">@((MarkupString)SchemaJson)</script>
+</HeadContent>
+
+<div class="site-shell">
+    <header class="site-header" id="top">
+        <div class="container navbar">
+            <a class="brand" href="#home" aria-label="Dr. Misiona Dental Clinic home" @onclick="CloseMenu">
+                <img class="brand__logo" src="images/dr-misiona-logo.png" alt="" decoding="async" />
+                <span class="brand__text"><strong>Dr. Misiona</strong><small>Dental Clinic</small><em>San Jose Del Monte</em></span>
+            </a>
+
+            <button class="menu-toggle" type="button" aria-label="Toggle navigation" aria-controls="main-navigation" aria-expanded="@menuOpen.ToString().ToLowerInvariant()" @onclick="ToggleMenu">
+                <span></span><span></span><span></span>
+            </button>
+
+            <nav class="main-nav @(menuOpen ? "is-open" : null)" id="main-navigation" aria-label="Primary navigation">
+                <a class="button button--nav" href="#appointment" @onclick="CloseMenu"><img class="button__icon" src="images/icons/calendar.svg" alt="" aria-hidden="true" /><span class="button__label">Book an Appointment</span></a>
+                <a class="button button--nav button--directions" href="@GoogleMapsUrl" target="_blank" rel="noopener noreferrer" @onclick="CloseMenu"><img class="button__icon" src="images/icons/map-pin.svg" alt="" aria-hidden="true" /><span class="button__label">Get Direction</span></a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero reveal" id="home">
+            <div class="container hero__grid">
+                <div class="hero__content">
+                    <p class="eyebrow">Dr. Misiona Dental Clinic - San Jose Del Monte</p>
+                    <h1>Your Smile, Our Mission</h1>
+                    <p class="hero__lead">Bright, modern dental care for individuals and families in Muzon, San Jose del Monte—delivered with gentle service, personalized attention, and a comfortable clinic experience at every visit.</p>
+                    <div class="hero__actions">
+                        <a class="button button--primary" href="#appointment"><img class="button__icon" src="images/icons/calendar.svg" alt="" aria-hidden="true" /><span class="button__label">Book an Appointment</span></a>
+                        <a class="button button--outline-dark" href="tel:09608193670"><img class="button__icon" src="images/icons/phone.svg" alt="" aria-hidden="true" /><span class="button__label">Call the Clinic</span></a>
+                    </div>
+                    <div class="hero-review" aria-label="Clinic patient review highlight">
+                        <div class="hero-review__rating">
+                            <span class="hero-review__score">5.0</span>
+                            <span class="hero-review__stars" aria-label="Five star patient experience">★★★★★</span>
+                            <span class="hero-review__label">Patient experience</span>
+                        </div>
+                        <p>Thoughtful dental care designed around comfort, clarity, and confident smiles.</p>
+                    </div>
+                </div>
+
+                <aside class="hero-panel" aria-label="Clinic visual highlight">
+                    <figure class="site-image site-image--hero">
+                        <div class="image-placeholder image-placeholder--hero" role="img" aria-label="Dr. Misiona Dental Clinic image placeholder">
+                            <img src="images/dr-misiona-logo.png" alt="" decoding="async" />
+                            <span>Dr. Misiona Dental Clinic</span>
+                            <strong>Image Placeholder</strong>
+                        </div>
+                    </figure>
+                    <div class="hero-care-card" aria-label="Appointment reminder">
+                        <img src="images/icons/calendar.svg" alt="" aria-hidden="true" />
+                        <div>
+                            <strong>Appointments are recommended</strong>
+                            <span>Send a request online and wait for clinic confirmation before visiting.</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+            <div class="container hero-trust">
+                <ul class="trust-list" aria-label="Clinic highlights">
+                    <li>Family dental care</li>
+                    <li>Modern treatment options</li>
+                    <li>Convenient Muzon location</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section section--sage reveal" id="announcements">
+            <div class="container">
+                <div class="section-heading">
+                    <div><p class="eyebrow">Announcement board</p><h2>Clinic updates and notices</h2></div>
+                    <p>Clinic notices, reminders, and updates will appear here once confirmed by the clinic team.</p>
+                </div>
+
+                <button class="hmo-panel hmo-panel--announcement reveal-card" id="hmo-announcement-card" type="button" aria-labelledby="hmo-partners-title" @onclick="OpenHmoAnnouncementModalAsync">
+                    <div class="hmo-panel__header">
+                        <p class="eyebrow">Clinic announcement</p>
+                        <h3 id="hmo-partners-title">Now partnered with accredited HMO providers</h3>
+                        <p>Dr. Misiona Dental Clinic is pleased to announce its accredited HMO partners.</p>
+                    </div>
+                    <span class="hmo-panel__footer">View announcement</span>
+                </button>
+
+                <div class="card-grid four-two-one-grid" id="announcement-cards">
+                    @foreach (var announcement in GetVisibleItems(Announcements, announcementsExpanded, announcementsVisibleCount))
+                    {
+                        <button class="info-card announcement-card reveal-card @(announcement.Featured ? "announcement-card--featured" : null)" id="@announcement.CardId" type="button" @onclick="() => OpenAnnouncementModalAsync(announcement)" aria-label="Read announcement details for @announcement.Title">
+                            <div class="announcement-card__meta"><time datetime="@announcement.DateIso">@announcement.DisplayDate</time><span>@announcement.Category</span></div>
+                            <h3>@announcement.Title</h3>
+                            <p>@announcement.Summary</p>
+                            <span class="announcement-card__action">View details</span>
+                        </button>
+                    }
+                </div>
+
+                @if (ShouldShowToggle(Announcements, announcementsVisibleCount))
+                {
+                    <button class="button button--accent section-toggle" type="button" aria-controls="announcement-cards" aria-expanded="@announcementsExpanded.ToString().ToLowerInvariant()" @onclick="ToggleAnnouncementsAsync"><img class="button__icon" src="images/icons/chevron-down.svg" alt="" aria-hidden="true" /><span class="button__label">@(announcementsExpanded ? "Show Less" : "Show More")</span></button>
+                }
+            </div>
+        </section>
+
+        <section class="section section--white reveal" id="office-space">
+            <div class="container">
+                <div class="section-heading">
+                    <div><p class="eyebrow">Office space</p><h2>A closer look at the clinic</h2></div>
+                    <p>Selected clinic photos highlight the reception area, treatment rooms, and patient waiting spaces.</p>
+                </div>
+
+                <div class="card-grid four-two-one-grid" id="office-cards">
+                    @foreach (var space in GetVisibleItems(OfficeSpaces, officeExpanded, officeVisibleCount))
+                    {
+                        <button class="gallery-card reveal-card" id="@space.CardId" type="button" aria-label="Preview @space.Title" @onclick="() => OpenGalleryAsync(space)">
+                            <figure class="site-image site-image--card">
+                                <div class="image-placeholder image-placeholder--card" role="img" aria-label="Dr. Misiona Dental Clinic image placeholder for @space.Title">
+                                    <img src="images/dr-misiona-logo.png" alt="" loading="@space.Loading" decoding="async" />
+                                    <span>Dr. Misiona Dental Clinic</span>
+                                    <strong>Image Placeholder</strong>
+                                </div>
+                            </figure>
+                            <span>@space.Category</span>
+                            <h3>@space.Title</h3>
+                            <p>@space.Description</p>
+                        </button>
+                    }
+                </div>
+
+                @if (ShouldShowToggle(OfficeSpaces, officeVisibleCount))
+                {
+                    <button class="button button--accent section-toggle" type="button" aria-controls="office-cards" aria-expanded="@officeExpanded.ToString().ToLowerInvariant()" @onclick="ToggleOfficeAsync"><img class="button__icon" src="images/icons/chevron-down.svg" alt="" aria-hidden="true" /><span class="button__label">@(officeExpanded ? "Show Less" : "Show More")</span></button>
+                }
+            </div>
+        </section>
+
+        <section class="section section--about reveal" id="dentist">
+            <div class="container dentist-layout about-layout">
+                <figure class="section-photo">
+                    <div class="image-placeholder image-placeholder--about" role="img" aria-label="Dr. Misiona Dental Clinic staff team photo placeholder">
+                        <img src="images/dr-misiona-logo.png" alt="" loading="lazy" decoding="async" />
+                        <span>Dr. Misiona Dental Clinic</span>
+                        <strong>Team Photo Placeholder</strong>
+                    </div>
+                </figure>
+                <div class="dentist-copy about-copy">
+                    <p class="eyebrow">OUR CLINIC TEAM</p>
+                    <h2>Meet the Dr. Misiona - SJDM Branch Staff</h2>
+                    <p class="dentist-intro about-text">The Dr. Misiona Dental Clinic staff supports each visit with friendly service, attentive patient care, clear communication, and steady guidance from appointment requests to treatment planning and follow-up reminders.</p>
+                    <a class="button button--accent" href="#appointment"><img class="button__icon" src="images/icons/calendar.svg" alt="" aria-hidden="true" /><span class="button__label">Request an Appointment</span></a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section--branches reveal" id="branches">
+            <div class="container">
+                <div class="section-heading section-heading--center">
+                    <div><p class="eyebrow">Other branches</p><h2>Our Other Branches</h2></div>
+                    <p>Quality care, closer to you. Visit another Dr. Misiona Dental Clinic branch when it is more convenient for your schedule or location.</p>
+                </div>
+
+                <div class="branch-grid">
+                    @foreach (var branch in OtherBranches)
+                    {
+                        <article class="branch-card reveal-card">
+                            <figure class="site-image branch-card__image">
+                                <div class="image-placeholder image-placeholder--card" role="img" aria-label="Dr. Misiona Dental Clinic branch image placeholder for @branch.Name">
+                                    <img src="images/dr-misiona-logo.png" alt="" loading="lazy" decoding="async" />
+                                    <span>Dr. Misiona Dental Clinic</span>
+                                    <strong>Branch Image Placeholder</strong>
+                                </div>
+                            </figure>
+                            <div class="branch-card__body">
+                                <h3>@branch.Name</h3>
+                                <address><img src="images/icons/map-pin.svg" alt="" aria-hidden="true" />@branch.Address</address>
+                                <a href="tel:@branch.PhoneHref"><img src="images/icons/phone.svg" alt="" aria-hidden="true" />@branch.Phone</a>
+                                <p><img src="images/icons/clock.svg" alt="" aria-hidden="true" />@branch.Hours</p>
+                            </div>
+                        </article>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <section class="section section--cream reveal" id="services">
+            <div class="container">
+                <div class="section-heading">
+                    <div><p class="eyebrow">Primary services</p><h2>Dental services for different smile needs</h2></div>
+                    <p>Every recommendation depends on your dental assessment, oral health, and treatment goals.</p>
+                </div>
+
+                <div class="card-grid four-two-one-grid" id="service-cards">
+                    @foreach (var service in GetVisibleItems(Services, servicesExpanded, servicesVisibleCount))
+                    {
+                        <article class="info-card service-card reveal-card" id="@service.CardId">
+                            <span class="card__icon" aria-hidden="true"><img src="@service.IconPath" alt="" /></span>
+                            <h3>@service.Title</h3>
+                            <p>@service.Description</p>
+                        </article>
+                    }
+                </div>
+
+                @if (ShouldShowToggle(Services, servicesVisibleCount))
+                {
+                    <button class="button button--accent section-toggle" type="button" aria-controls="service-cards" aria-expanded="@servicesExpanded.ToString().ToLowerInvariant()" @onclick="ToggleServicesAsync"><img class="button__icon" src="images/icons/chevron-down.svg" alt="" aria-hidden="true" /><span class="button__label">@(servicesExpanded ? "Show Less" : "Show More")</span></button>
+                }
+            </div>
+        </section>
+
+        <section class="section section--cream reveal" id="appointment">
+            <div class="container appointment-wrap">
+                <div class="section-heading section-heading--center">
+                    <div><p class="eyebrow">Booking appointment</p><h2>Request an appointment</h2></div>
+                    <p>Submitting this form sends an appointment request. The clinic will contact you to confirm the final schedule.</p>
+                </div>
+
+                <form class="appointment-form" action="https://api.staticforms.dev/submit" method="post">
+                    <input type="hidden" name="apiKey" value="__STATIC_FORMS_API_KEY__" />
+                    <input type="hidden" name="subject" value="Dr. Misiona Dental Clinic appointment request" />
+                    <input class="honeypot-field" type="text" name="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+                    <label><span>Full name <strong aria-hidden="true">*</strong></span><input name="name" type="text" autocomplete="name" required aria-describedby="appointment-status" /></label>
+                    <label><span>Contact number <strong aria-hidden="true">*</strong></span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" required /></label>
+                    <label><span>Email address <strong aria-hidden="true">*</strong></span><input name="email" type="email" autocomplete="email" required /></label>
+                    <label><span>Preferred dental service <strong aria-hidden="true">*</strong></span><select name="service" required><option value="">Select a service</option>@foreach (var service in Services){<option value="@service.Title">@service.Title</option>}</select></label>
+                    <label><span>Preferred appointment date <strong aria-hidden="true">*</strong></span><input name="preferredDate" type="date" required /></label>
+                    <label><span>Preferred time <strong aria-hidden="true">*</strong></span><input name="preferredTime" type="time" required /></label>
+                    <label><span>Message or dental concern <strong aria-hidden="true">*</strong></span><textarea name="message" rows="5" required placeholder="Briefly share your concern or question for the clinic."></textarea></label>
+                    <label class="consent-field"><input name="consent" type="checkbox" value="I agree" required /><span>I agree to be contacted by the clinic about this appointment request. <strong aria-hidden="true">*</strong></span></label>
+
+                    <p class="form-notice">This is a request only. Your appointment is confirmed only after the clinic contacts you.</p>
+                    <p class="form-status" id="appointment-status" role="alert" aria-live="polite"></p>
+                    <button class="button button--accent form-submit" type="submit" data-submit-label="Send Appointment Request"><img class="button__icon" src="images/icons/send.svg" alt="" aria-hidden="true" /><span class="button__label">Send Appointment Request</span></button>
+                </form>
+            </div>
+        </section>
+
+        <section class="section section--contact reveal" id="contact">
+            <div class="container contact-layout">
+                <div class="contact-panel">
+                    <p class="eyebrow">Contact and Location</p>
+                    <h2>Visit Dr. Misiona Dental Clinic</h2>
+                    <p class="contact-lead">Clinic hours to be confirmed. Contact the clinic before visiting to confirm availability.</p>
+                    <address class="contact-details">
+                        <span><i aria-hidden="true"><img src="images/icons/phone.svg" alt="" /></i><small>Phone</small><a href="tel:09608193670">0960 819 3670</a></span>
+                        <span><i aria-hidden="true"><img src="images/icons/mail.svg" alt="" /></i><small>Email</small><a href="mailto:drmisionadentalclinic@gmail.com">drmisionadentalclinic@gmail.com</a></span>
+                        <span><i aria-hidden="true"><img src="images/icons/clock.svg" alt="" /></i><small>Clinic hours</small><strong>Clinic hours to be confirmed</strong></span>
+                        <span><i aria-hidden="true"><img src="images/icons/map-pin.svg" alt="" /></i><small>Address</small><a href="@GoogleMapsUrl" target="_blank" rel="noopener noreferrer">122 Carriedo Street, Muzon, San Jose del Monte, Bulacan, Philippines 3023</a></span>
+                    </address>
+                    <div class="contact-actions">
+                        <a class="button button--outline-dark" href="@GoogleMapsUrl" target="_blank" rel="noopener noreferrer"><img class="button__icon" src="images/icons/map-pin.svg" alt="" aria-hidden="true" /><span class="button__label">Open Google Maps</span></a>
+                    </div>
+                    <p class="copy-status" role="status" aria-live="polite"></p>
+                    <div class="map-card" aria-label="Google Maps preview for Dr. Misiona Dental Clinic">
+                        <iframe class="map-preview" title="Dr. Misiona Dental Clinic Google Maps preview" src="@GoogleMapsEmbedUrl" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <div class="map-summary">
+                            <div>
+                                <h3>Dr. Misiona Dental Clinic</h3>
+                                <address>122 Carriedo Street, Muzon, San Jose del Monte, Bulacan, Philippines 3023</address>
+                            </div>
+                            <a class="button button--outline-dark" href="@GoogleMapsUrl" target="_blank" rel="noopener noreferrer"><img class="button__icon" src="images/icons/map-pin.svg" alt="" aria-hidden="true" /><span class="button__label">Open Google Maps</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-wrap">
+            <div class="footer-grid">
+                <section class="footer-brand-panel">
+                    <a class="footer-brand" href="#home" aria-label="Dr. Misiona Dental Clinic home">
+                        <img src="images/dr-misiona-logo.png" alt="" loading="lazy" decoding="async" />
+                        <span><strong>Dr. Misiona</strong><small>Dental Clinic</small></span>
+                    </a>
+                    <p>Your smile is our mission. We provide quality dental care with compassion and clear communication.</p>
+                    <div class="footer-socials" aria-label="Clinic social links">
+                        <a href="@FacebookUrl" target="_blank" rel="noopener noreferrer" aria-label="Visit Dr. Misiona Dental Clinic on Facebook"><img src="images/icons/facebook.svg" alt="" aria-hidden="true" /></a>
+                        <a href="mailto:drmisionadentalclinic@gmail.com" aria-label="Email Dr. Misiona Dental Clinic"><img src="images/icons/mail.svg" alt="" aria-hidden="true" /></a>
+                    </div>
+                </section>
+
+                <nav class="footer-column" aria-label="Footer quick links">
+                    <h3>Quick Links</h3>
+                    <a href="#home">Home</a>
+                    <a href="#announcements">Announcements</a>
+                    <a href="#office-space">Office Space</a>
+                    <a href="#dentist">Our Team</a>
+                    <a href="#services">Services</a>
+                    <a href="#contact">Contact</a>
+                </nav>
+
+                <section class="footer-column">
+                    <h3>Our Clinic</h3>
+                    <a href="@GoogleMapsUrl" target="_blank" rel="noopener noreferrer">122 Carriedo Street, Muzon, San Jose del Monte, Bulacan</a>
+                    <a href="tel:09608193670">0960 819 3670</a>
+                    <span>Clinic hours to be confirmed</span>
+                </section>
+
+                <section class="footer-column footer-branches">
+                    <h3>Other Branches</h3>
+                    @foreach (var branch in OtherBranches)
+                    {
+                        <div>
+                            <strong>@branch.Name</strong>
+                            <span>@branch.Address</span>
+                            <a href="tel:@branch.PhoneHref"><img src="images/icons/phone.svg" alt="" aria-hidden="true" />@branch.Phone</a>
+                        </div>
+                    }
+                </section>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <span>Copyright &copy; 2026 Dr. Misiona Dental Clinic - San Jose Del Monte. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <aside class="floating-contact-rail" aria-label="Quick clinic contact options">
+        <button class="floating-contact-button floating-contact-button--top" type="button" aria-label="Back to top" title="Back to top" @onclick="BackToTopAsync">
+            <img src="images/icons/arrow-up.svg" alt="" aria-hidden="true" />
+        </button>
+        @foreach (var contact in FloatingContacts)
+        {
+            <button class="floating-contact-button" id="@contact.ButtonId" type="button" aria-label="@contact.ActionLabel" title="@contact.Label" @onclick="() => OpenFloatingContactModalAsync(contact)">
+                <img src="@contact.IconPath" alt="" aria-hidden="true" />
+                <span>@contact.Label</span>
+            </button>
+        }
+    </aside>
+
+    @if (selectedAnnouncement is not null)
+    {
+        <div class="site-modal" role="dialog" aria-modal="true" aria-labelledby="announcement-modal-title" @onclick="CloseAnnouncementModalAsync">
+            <div class="site-modal__panel announcement-modal__panel" @onclick:stopPropagation="true">
+                <header><h2 id="announcement-modal-title">@selectedAnnouncement.Title</h2><button class="modal-close" type="button" aria-label="Close announcement details" @onclick="CloseAnnouncementModalAsync"><img class="control__icon" src="images/icons/close.svg" alt="" aria-hidden="true" /></button></header>
+                <div class="site-modal__body announcement-modal__body">
+                    <div class="modal-intro">
+                        <span class="modal-icon" aria-hidden="true"><img src="images/icons/calendar.svg" alt="" /></span>
+                        <div>
+                            <div class="announcement-card__meta"><time datetime="@selectedAnnouncement.DateIso">@selectedAnnouncement.DisplayDate</time><span>@selectedAnnouncement.Category</span></div>
+                            <p>@selectedAnnouncement.Description</p>
+                        </div>
+                    </div>
+                    <p class="modal-note">@selectedAnnouncement.Status</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (hmoAnnouncementOpen)
+    {
+        <div class="site-modal" role="dialog" aria-modal="true" aria-labelledby="hmo-modal-title" @onclick="CloseHmoAnnouncementModalAsync">
+            <div class="site-modal__panel hmo-modal__panel" @onclick:stopPropagation="true">
+                <header><h2 id="hmo-modal-title">Now partnered with accredited HMO providers</h2><button class="modal-close" type="button" aria-label="Close HMO partner details" @onclick="CloseHmoAnnouncementModalAsync"><img class="control__icon" src="images/icons/close.svg" alt="" aria-hidden="true" /></button></header>
+                <div class="site-modal__body hmo-modal__body">
+                    <figure class="hmo-artwork hmo-artwork--modal">
+                        <img src="images/hmo-accredited-partners.png" alt="Dr. Misiona Dental Clinic HMO accredited partners announcement" />
+                    </figure>
+                    <p class="modal-note">Please contact the clinic before your visit to confirm HMO coverage, eligibility, and appointment requirements.</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (selectedFloatingContact is not null)
+    {
+        <div class="site-modal" role="dialog" aria-modal="true" aria-labelledby="floating-contact-title" @onclick="CloseFloatingContactModalAsync">
+            <div class="site-modal__panel contact-confirm-modal__panel" @onclick:stopPropagation="true">
+                <header><h2 id="floating-contact-title">@selectedFloatingContact.ConfirmTitle</h2><button class="modal-close" type="button" aria-label="Close contact confirmation" @onclick="CloseFloatingContactModalAsync"><img class="control__icon" src="images/icons/close.svg" alt="" aria-hidden="true" /></button></header>
+                <div class="site-modal__body contact-confirm-modal__body">
+                    <div class="modal-intro">
+                        <span class="modal-icon" aria-hidden="true"><img src="@selectedFloatingContact.IconPath" alt="" /></span>
+                        <div>
+                            <p class="modal-kicker">@selectedFloatingContact.Label</p>
+                            <p>@selectedFloatingContact.ConfirmMessage</p>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="button button--outline-dark" type="button" @onclick="CloseFloatingContactModalAsync"><img class="button__icon" src="images/icons/close.svg" alt="" aria-hidden="true" /><span class="button__label">Cancel</span></button>
+                        <a class="button button--accent" href="@selectedFloatingContact.Url" target="@selectedFloatingContact.Target" rel="@selectedFloatingContact.Rel" @onclick="CloseFloatingContactModalAsync"><img class="button__icon" src="@selectedFloatingContact.IconPath" alt="" aria-hidden="true" /><span class="button__label">@selectedFloatingContact.ConfirmButtonLabel</span></a>
+                    </div>
+                    <p class="modal-note">@selectedFloatingContact.Note</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (selectedOfficeSpace is not null)
+    {
+        <div class="site-modal gallery-modal" role="dialog" aria-modal="true" aria-labelledby="gallery-modal-title" @onclick="CloseGalleryAsync">
+            <div class="site-modal__panel gallery-modal__panel" @onclick:stopPropagation="true">
+                <header class="gallery-modal__header"><h2 id="gallery-modal-title">@selectedOfficeSpace.Title</h2><button class="modal-close" type="button" aria-label="Close gallery preview" @onclick="CloseGalleryAsync"><img class="control__icon" src="images/icons/close.svg" alt="" aria-hidden="true" /></button></header>
+                <div class="gallery-preview">
+                    <figure>
+                        <div class="image-placeholder image-placeholder--gallery" role="img" aria-label="Dr. Misiona Dental Clinic office space image placeholder">
+                            <img src="images/dr-misiona-logo.png" alt="" />
+                            <span>Dr. Misiona Dental Clinic</span>
+                            <strong>Office Space Image Placeholder</strong>
+                        </div>
+                        <figcaption>Dr. Misiona Dental Clinic maintains a clean, welcoming, and organized environment for patient consultations, treatment planning, and dental care.</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="success-modal" id="success-modal" role="dialog" aria-modal="true" aria-labelledby="success-title" aria-hidden="true">
+        <div class="success-modal__panel">
+            <header><h2 id="success-title">Appointment request sent</h2><button class="success-modal__close" type="button" aria-label="Close appointment confirmation"><img class="control__icon" src="images/icons/close.svg" alt="" aria-hidden="true" /></button></header>
+            <div class="success-modal__body">
+                <div class="success-mark" aria-hidden="true">&#10003;</div>
+                <p>Thank you. Dr. Misiona Dental Clinic received your request and will contact you to confirm the final schedule.</p>
+                <button class="button button--accent success-modal__close" type="button"><img class="button__icon" src="images/icons/check.svg" alt="" aria-hidden="true" /><span class="button__label">Done</span></button>
+                <small>Please call 0960 819 3670 for time-sensitive concerns.</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private const string FacebookUrl = "https://www.facebook.com/DrMisionaDentalClinic";
+    private const string GoogleMapsUrl = "https://maps.app.goo.gl/7Jkjy7LWoP8hsRvt8";
+    private const string GoogleMapsEmbedUrl = "https://www.google.com/maps?q=122%20Carriedo%20Street%2C%20Muzon%2C%20San%20Jose%20del%20Monte%2C%20Bulacan%2C%20Philippines%203023&output=embed";
+    private bool menuOpen;
+    private bool servicesExpanded;
+    private bool announcementsExpanded;
+    private bool officeExpanded;
+    private bool hmoAnnouncementOpen;
+    private int servicesVisibleCount = 4;
+    private int announcementsVisibleCount = 4;
+    private int officeVisibleCount = 4;
+    private Announcement? selectedAnnouncement;
+    private OfficeSpace? selectedOfficeSpace;
+    private FloatingContact? selectedFloatingContact;
+    private string? lastFocusedElementId;
+    private DotNetObjectReference<Home>? pageReference;
+
+    private async Task ToggleMenu()
+    {
+        menuOpen = !menuOpen;
+        await JS.InvokeVoidAsync("misionaHome.setMenuOpen", menuOpen);
+    }
+
+    private async Task CloseMenu()
+    {
+        menuOpen = false;
+        await JS.InvokeVoidAsync("misionaHome.setMenuOpen", false);
+    }
+
+    private async Task ToggleServicesAsync()
+    {
+        servicesExpanded = !servicesExpanded;
+        await ScrollNearToggleAsync("services", servicesExpanded);
+    }
+
+    private async Task ToggleAnnouncementsAsync()
+    {
+        announcementsExpanded = !announcementsExpanded;
+        await ScrollNearToggleAsync("announcements", announcementsExpanded);
+    }
+
+    private async Task ToggleOfficeAsync()
+    {
+        officeExpanded = !officeExpanded;
+        await ScrollNearToggleAsync("office-space", officeExpanded);
+    }
+
+    private async Task ScrollNearToggleAsync(string sectionId, bool isExpanded)
+    {
+        if (!isExpanded)
+        {
+            await JS.InvokeVoidAsync("misionaHome.scrollNear", sectionId);
+        }
+    }
+
+    private async Task OpenAnnouncementModalAsync(Announcement announcement)
+    {
+        selectedAnnouncement = announcement;
+        lastFocusedElementId = announcement.CardId;
+        await InvokeAsync(StateHasChanged);
+        await JS.InvokeVoidAsync("misionaHome.openModal", "announcement");
+    }
+
+    [JSInvokable]
+    public async Task CloseAnnouncementModalAsync()
+    {
+        if (selectedAnnouncement is null)
+        {
+            return;
+        }
+
+        selectedAnnouncement = null;
+        await InvokeAsync(StateHasChanged);
+        await JS.InvokeVoidAsync("misionaHome.closeModal", lastFocusedElementId);
+    }
+
+    private async Task OpenHmoAnnouncementModalAsync()
+    {
+        hmoAnnouncementOpen = true;
+        lastFocusedElementId = "hmo-announcement-card";
+        await InvokeAsync(StateHasChanged);
+        await JS.InvokeVoidAsync("misionaHome.openModal", "hmo");
+    }
+
+    [JSInvokable]
+    public async Task CloseHmoAnnouncementModalAsync()
+    {
+        if (!hmoAnnouncementOpen)
+        {
+            return;
+        }
+
+        hmoAnnouncementOpen = false;
+        await InvokeAsync(StateHasChanged);
+        await JS.InvokeVoidAsync("misionaHome.closeModal", lastFocusedElementId);
+    }
+
+    private async Task OpenGalleryAsync(OfficeSpace space)
+    {
+        selectedOfficeSpace = space;
+        lastFocusedElementId = space.CardId;
+        await InvokeAsync(StateHasChanged);
+        await JS.InvokeVoidAsync("misionaHome.openModal", "gallery");
+    }
+
+    [JSInvokable]
+    public async Task CloseGalleryAsync()
+    {
+        if (selectedOfficeSpace is null)
+        {
+            return;
+        }
+
+        selectedOfficeSpace = null;
+        await InvokeAsync(StateHasChanged);
+        await JS.InvokeVoidAsync("misionaHome.closeModal", lastFocusedElementId);
+    }
+
+    private async Task BackToTopAsync() => await JS.InvokeVoidAsync("misionaHome.scrollNear", "home");
+
+    private async Task OpenFloatingContactModalAsync(FloatingContact contact)
+    {
+        selectedFloatingContact = contact;
+        lastFocusedElementId = contact.ButtonId;
+        await InvokeAsync(StateHasChanged);
+        await JS.InvokeVoidAsync("misionaHome.openModal", "floating-contact");
+    }
+
+    [JSInvokable]
+    public async Task CloseFloatingContactModalAsync()
+    {
+        if (selectedFloatingContact is null)
+        {
+            return;
+        }
+
+        selectedFloatingContact = null;
+        await InvokeAsync(StateHasChanged);
+        await JS.InvokeVoidAsync("misionaHome.closeModal", lastFocusedElementId);
+    }
+
+    private static IEnumerable<T> GetVisibleItems<T>(IReadOnlyList<T> items, bool expanded, int visibleCount) =>
+        expanded ? items : items.Take(visibleCount);
+
+    private static bool ShouldShowToggle<T>(IReadOnlyList<T> items, int visibleCount) =>
+        items.Count > visibleCount;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        pageReference = DotNetObjectReference.Create(this);
+        await JS.InvokeVoidAsync("misionaHome.initialize", pageReference);
+    }
+
+    [JSInvokable]
+    public Task UpdateVisibleCounts(int services, int announcements, int office)
+    {
+        servicesVisibleCount = Math.Max(1, services);
+        announcementsVisibleCount = Math.Max(1, announcements);
+        officeVisibleCount = Math.Max(1, office);
+
+        if (!ShouldShowToggle(Services, servicesVisibleCount)) servicesExpanded = false;
+        if (!ShouldShowToggle(Announcements, announcementsVisibleCount)) announcementsExpanded = false;
+        if (!ShouldShowToggle(OfficeSpaces, officeVisibleCount)) officeExpanded = false;
+
+        return InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (pageReference is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await JS.InvokeVoidAsync("misionaHome.dispose");
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+
+        pageReference.Dispose();
+    }
+
+    private const string SchemaJson = """
+    {
+      "@context":"https://schema.org",
+      "@type":["Dentist","LocalBusiness"],
+      "name":"Dr. Misiona Dental Clinic - San Jose Del Monte",
+      "description":"Professional and patient-focused dental care in Muzon, San Jose del Monte, Bulacan.",
+      "telephone":"0960 819 3670",
+      "email":"drmisionadentalclinic@gmail.com",
+      "address":{
+        "@type":"PostalAddress",
+        "streetAddress":"122 Carriedo Street, Muzon",
+        "addressLocality":"San Jose del Monte",
+        "addressRegion":"Bulacan",
+        "postalCode":"3023",
+        "addressCountry":"PH"
+      },
+      "sameAs":["https://www.facebook.com/DrMisionaDentalClinic"]
+    }
+    """;
+
+    private static readonly Service[] Services =
+    [
+        new("service-root-canal", "images/icons/tooth.svg", "Root Canal Therapy", "Care for selected teeth with infected or damaged inner tissue after dental assessment."),
+        new("service-aligners", "images/icons/tooth.svg", "Clear Aligners", "A removable orthodontic option discussed after checking alignment and bite needs."),
+        new("service-braces", "images/icons/tooth.svg", "Metal Braces", "A fixed orthodontic treatment option for selected alignment concerns."),
+        new("service-wisdom", "images/icons/tooth.svg", "Wisdom Tooth Removal", "Assessment and removal planning for wisdom teeth when clinically indicated."),
+        new("service-implant", "images/icons/tooth.svg", "Dental Implant", "A tooth replacement option that requires careful dental and bone assessment."),
+        new("service-veneers", "images/icons/tooth.svg", "Veneers, Jacket Crowns and Fixed Bridges", "Restorative options discussed for selected teeth and missing-tooth concerns."),
+        new("service-whitening", "images/icons/tooth.svg", "Teeth Whitening", "Whitening options discussed based on tooth condition and sensitivity history."),
+        new("service-dentures", "images/icons/tooth.svg", "Removable Dentures", "Removable tooth replacement options planned after oral assessment.")
+    ];
+
+    private static readonly Announcement[] Announcements =
+    [
+        new("announcement-clinic-notice", "2026-07-01", "Clinic notice", "Appointment requests are now available online", "Send your preferred date, time, and dental concern through the request form.", "Patients may send appointment requests through the website. The clinic team will contact you by phone, email, or Facebook to confirm the final schedule.", "Appointments are subject to clinic confirmation and dentist availability.", true),
+        new("announcement-clinic-update", "2026-06-15", "Clinic update", "Modern treatment rooms ready for patients", "Prepared rooms support consultations, cleanings, restorations, and orthodontic visits.", "Our treatment rooms are prepared with dental chairs, clinical lighting, and organized equipment to support consultations, cleanings, restorative care, and orthodontic visits.", "Please arrive a few minutes early so the team can prepare your patient details before treatment.", false),
+        new("announcement-patient-reminder", "2026-06-01", "Patient reminder", "Bring recent dental records when available", "X-rays, prescriptions, and previous treatment notes can help with assessment.", "For braces, root canal concerns, wisdom tooth checks, implants, dentures, crowns, or bridge planning, please bring any recent x-rays, prescriptions, or previous treatment notes if you have them.", "Records are helpful but not required. The dentist will still assess your concern during the visit.", false),
+        new("announcement-promo", "2026-05-15", "Promo", "Whitening and smile consultation inquiries accepted", "Ask about whitening, veneers, crowns, bridges, or clear aligner planning.", "Patients interested in teeth whitening, veneers, jacket crowns, fixed bridges, or aligners may request a consultation so the dentist can review tooth condition and treatment goals.", "Final treatment options and fees depend on dental assessment and clinic confirmation.", false),
+        new("announcement-important-notice", "2026-05-01", "Important notice", "Confirm urgent concerns before visiting", "Call first for swelling, dental pain, wisdom tooth discomfort, or broken restorations.", "For swelling, dental pain, wisdom tooth discomfort, broken restorations, or post-treatment concerns, please call the clinic first so the team can guide you on the next available visit.", "For severe or emergency symptoms, seek urgent medical or dental care immediately.", false)
+    ];
+
+    private static readonly Branch[] OtherBranches =
+    [
+        new("Novaliches Branch", "Unit 3A, 2/F Nova Plaza Bldg., Quirino Highway, Novaliches, Quezon City", "0938 123 4567", "09381234567", "Mon - Sun: 9:00 AM - 6:00 PM"),
+        new("Santa Maria Branch", "2/F SM City Santa Maria, Santa Maria, Bulacan", "0928 765 4321", "09287654321", "Mon - Sun: 9:00 AM - 6:00 PM")
+    ];
+
+    private static readonly FloatingContact[] FloatingContacts =
+    [
+        new("floating-call", "Call", "images/icons/phone.svg", "tel:09608193670", "_self", null, "Call the clinic", "Call Dr. Misiona Dental Clinic?", "This will start a phone call to 0960 819 3670 if your device supports calling.", "Call Now", "For urgent dental concerns, calling is the fastest way to reach the clinic."),
+        new("floating-facebook", "Facebook", "images/icons/facebook.svg", FacebookUrl, "_blank", "noopener noreferrer", "Visit the clinic Facebook page", "Open the clinic Facebook page?", "This will open Dr. Misiona Dental Clinic on Facebook in a new tab.", "Open Facebook", "You can use Facebook to send a message or check clinic updates."),
+        new("floating-email", "Email", "images/icons/mail.svg", "mailto:drmisionadentalclinic@gmail.com", "_self", null, "Email the clinic", "Send an email to the clinic?", "This will open your email app addressed to drmisionadentalclinic@gmail.com.", "Send Email", "Please include your name, concern, and preferred appointment date when emailing.")
+    ];
+
+    private static readonly OfficeSpace[] OfficeSpaces =
+    [
+        new("office-reception-wide", "images/clinic-reception-wide.png", "Wide reception area at Dr. Misiona Dental Clinic with front desk, ceiling lights, and clinic signage", "Reception", "Reception and Front Desk", "A wide view of the clinic reception area with warm lighting, signage, and front desk.", "lazy"),
+        new("office-front-desk", "images/clinic-front-desk.png", "Front desk and signage wall at Dr. Misiona Dental Clinic", "Reception", "Front Desk View", "A clean front-desk angle showing the clinic signage, gold accents, and reception counter.", "lazy"),
+        new("office-treatment-room-2", "images/clinic-treatment-room-2.png", "Treatment Room 2 doorway view with dental chair and equipment", "Treatment room", "Treatment Room 2", "A bright treatment room view showing the dental chair, equipment, and room signage.", "lazy"),
+        new("office-treatment-room-1", "images/clinic-treatment-room-1.png", "Treatment Room 1 doorway view with dental chair and equipment", "Treatment room", "Treatment Room 1", "A clean treatment room setup with dental chair, tools, and warm clinic accents.", "lazy"),
+        new("office-waiting-area", "images/clinic-waiting-area.png", "Waiting area at Dr. Misiona Dental Clinic with seating, plants, and wall decor", "Waiting area", "Patient Waiting Area", "A comfortable patient waiting space with plants, seating, and calm clinic lighting.", "lazy"),
+        new("office-hallway-lounge", "images/clinic-hallway-lounge.png", "Clinic hallway and lounge area with seating and glass frontage", "Clinic interior", "Hallway and Lounge", "A hallway view connecting the lounge seating, reception area, and treatment spaces.", "lazy")
+    ];
+
+    private sealed record Service(string CardId, string IconPath, string Title, string Description);
+    private sealed record FloatingContact(string ButtonId, string Label, string IconPath, string Url, string Target, string? Rel, string ActionLabel, string ConfirmTitle, string ConfirmMessage, string ConfirmButtonLabel, string Note);
+    private sealed record Announcement(string CardId, string DateIso, string Category, string Title, string Summary, string Description, string Status, bool Featured)
+    {
+        public string DisplayDate => DateOnly.Parse(DateIso).ToString("MMM d, yyyy");
+    }
+    private sealed record Branch(string Name, string Address, string Phone, string PhoneHref, string Hours);
+    private sealed record OfficeSpace(string CardId, string ImagePath, string AltText, string Category, string Title, string Description, string Loading);
+}
